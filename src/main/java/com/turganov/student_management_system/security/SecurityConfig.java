@@ -1,36 +1,29 @@
 package com.turganov.student_management_system.security;
 
-import org.springframework.context.annotation.Bean;
+import com.turganov.student_management_system.service.StudentDetailService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.SecurityConfigurerAdapter;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.DefaultSecurityFilterChain;
 
 @Configuration
 @EnableWebSecurity
-public class SecurityConfig{
+public class SecurityConfig {
 
-    @Bean
-    public UserDetailsService userDetailsService() {
-        UserDetails user = User.withUsername("user").
-                password("{noop}password").
-                roles("USER")
-                .build();
+    private final StudentDetailService studentDetailService;
+    private final PasswordEncoder passwordEncoder;
+    private final PasswordEncoderConfig passwordEncoderConfig;
 
-        return new InMemoryUserDetailsManager(user);
+    @Autowired
+    public SecurityConfig(StudentDetailService studentDetailService, PasswordEncoder passwordEncoder, PasswordEncoderConfig passwordEncoderConfig) {
+        this.studentDetailService = studentDetailService;
+        this.passwordEncoder = passwordEncoder;
+        this.passwordEncoderConfig = passwordEncoderConfig;
     }
 
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return PasswordEncoderFactories.createDelegatingPasswordEncoder();
-    }
 
     @Configuration
     public static class WebSecurityConfigurer extends SecurityConfigurerAdapter<DefaultSecurityFilterChain, HttpSecurity> {

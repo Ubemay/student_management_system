@@ -2,7 +2,6 @@ package com.turganov.student_management_system.repository;
 
 import com.turganov.student_management_system.entity.Student;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -18,5 +17,7 @@ public interface StudentRepository extends JpaRepository<Student, Long> {
     List<Student> findByAgeGreaterThanEqual(Integer minAge);
 
     List<Student> findByAgeLessThanEqual(Integer maxAge);
+
+    Student findByUsername(String username);
 }
 

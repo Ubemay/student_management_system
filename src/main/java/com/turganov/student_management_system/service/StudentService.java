@@ -16,7 +16,7 @@ public interface StudentService {
 
     Student findStudentById(Long id);
 
-    Student findStudentsByName(String name);
+    List<Student> findStudentsByName(String name);
 
     List<Student> filterStudentsByAgeRange(Integer minAge, Integer maxAge);
 }

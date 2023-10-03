@@ -9,7 +9,7 @@ import java.util.List;
 @Repository
 public interface StudentRepository extends JpaRepository<Student, Long> {
 
-    Student findByFirstname(String name);
+    List<Student> findAllByFirstname(String name);
 
 
     List<Student> findByAgeBetween(Integer minAge, Integer maxAge);
@@ -18,6 +18,5 @@ public interface StudentRepository extends JpaRepository<Student, Long> {
 
     List<Student> findByAgeLessThanEqual(Integer maxAge);
 
-    Student findByUsername(String username);
 }
 

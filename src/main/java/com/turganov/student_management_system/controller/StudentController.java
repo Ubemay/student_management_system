@@ -4,19 +4,17 @@ import com.turganov.student_management_system.entity.Student;
 import com.turganov.student_management_system.service.StudentService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
+@CrossOrigin
 public class StudentController {
 
     private StudentService studentService;
 
     public StudentController(StudentService studentService) {
-        super();
         this.studentService = studentService;
     }
 
@@ -84,10 +82,10 @@ public class StudentController {
     }
 
     @GetMapping("/student/name/{name}")
-    public ResponseEntity<Student> findStudentByName(@PathVariable String name) {
-        Student student = studentService.findStudentsByName(name);
-        if (student != null) {
-            return new ResponseEntity<>(student, HttpStatus.OK);
+    public ResponseEntity<List<Student>> findStudentsByName(@PathVariable String name) {
+        List<Student> students = studentService.findStudentsByName(name);
+        if (!students.isEmpty()) {
+            return new ResponseEntity<>(students, HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
@@ -99,20 +97,18 @@ public class StudentController {
         return ResponseEntity.ok(filteredStudents);
     }
 
-    @GetMapping("/me")
-    public ResponseEntity<Student> getCurrentUser() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-        if (authentication != null && authentication.isAuthenticated()) {
-            String username = authentication.getName();
-            Student student = studentService.findStudentsByName(username);
-
-            if (student != null) {
-                return new ResponseEntity<>(student, HttpStatus.OK);
-            }
-        }
-
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-    }
+//    @GetMapping("/me")
+//    public ResponseEntity<Student> getCurrentUser() {
+//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//
+//        if (authentication != null && authentication.isAuthenticated()) {
+//            String username = authentication.getName();
+//            Student student = studentService.findStudentsByName(username);
+//
+//            return new ResponseEntity<>(student, HttpStatus.OK);
+//        }
+//
+//        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+//    }
 
 }

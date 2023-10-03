@@ -5,6 +5,7 @@ import com.turganov.student_management_system.repository.StudentRepository;
 import com.turganov.student_management_system.service.StudentService;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -44,8 +45,8 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
-    public Student findStudentsByName(String name) {
-        return studentRepository.findByFirstname(name);
+    public List<Student> findStudentsByName(String name) {
+        return studentRepository.findAllByFirstname(name);
     }
 
     @Override

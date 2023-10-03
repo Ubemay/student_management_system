@@ -8,7 +8,8 @@ public class Student {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Column(name = "student_id")
+    private Long student_id;
 
     @Column(name = "first_name", nullable = false)
     private String firstname;
@@ -22,12 +23,9 @@ public class Student {
     @Column(name = "age", nullable = false)
     private Integer age;
 
-    @Column(name = "username", nullable = false, unique = true)
-    private String username;
-
-    @Column(name = "password", nullable = false)
-    private String password;
-
+    @ManyToOne
+    @JoinColumn(name = "group_id")
+    private Group group;
 
     public Student() {
     }
@@ -40,7 +38,7 @@ public class Student {
     }
 
     public Student(Long id, String firstname, String lastname, String email, Integer age) {
-        this.id = id;
+        this.student_id = id;
         this.firstname = firstname;
         this.lastname = lastname;
         this.email = email;
@@ -48,11 +46,11 @@ public class Student {
     }
 
     public Long getId() {
-        return id;
+        return student_id;
     }
 
     public void setId(Long id) {
-        this.id = id;
+        this.student_id = id;
     }
 
     public String getFirstname() {
@@ -87,19 +85,5 @@ public class Student {
         this.age = age;
     }
 
-    public String getUsername() {
-        return username;
-    }
 
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
 }

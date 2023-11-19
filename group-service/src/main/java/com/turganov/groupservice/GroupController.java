@@ -10,6 +10,7 @@ import org.springframework.web.client.RestTemplate;
 import java.util.List;
 
 @RestController
+@CrossOrigin
 public class GroupController {
 
     private final GroupService groupService;

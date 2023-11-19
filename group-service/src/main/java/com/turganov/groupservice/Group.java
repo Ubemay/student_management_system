@@ -18,5 +18,4 @@ public class Group {
 
     @Column(name = "faculty")
     private String faculty;
-
 }

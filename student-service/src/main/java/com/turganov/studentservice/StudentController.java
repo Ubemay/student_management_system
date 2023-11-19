@@ -1,25 +1,46 @@
 package com.turganov.studentservice;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
+@CrossOrigin
 public class StudentController {
 
     private final StudentService studentService;
+    private final GroupClient groupClient;
 
-    public StudentController(StudentService studentService) {
+    public StudentController(StudentService studentService, GroupClient groupClient) {
         this.studentService = studentService;
+        this.groupClient = groupClient;
     }
 
     @GetMapping("/student")
-    public ResponseEntity<List<Student>> listStudents() {
+    public ResponseEntity<List<StudentDTO>> listStudents() {
         List<Student> students = studentService.getAllStudent();
-        return ResponseEntity.ok(students);
+        List<StudentDTO> responseList = new ArrayList<>();
+
+        for (Student student : students) {
+            StudentDTO response = new StudentDTO();
+            response.setId(student.getId());
+            response.setAge(student.getAge());
+            response.setEmail(student.getEmail());
+            response.setFirstname(student.getFirstname());
+            response.setLastname(student.getLastname());
+
+            ResponseEntity <Group> groupResponse = groupClient.getGroupsById(student.getGroupId());
+            if (groupResponse.getStatusCode() == HttpStatus.OK) {
+                response.setGroup(groupResponse.getBody());
+            }
+
+            responseList.add(response);
+        }
+
+        return ResponseEntity.ok(responseList);
     }
 
     @PostMapping("/student")
@@ -95,6 +116,7 @@ public class StudentController {
         return ResponseEntity.ok(filteredStudents);
     }
 
+    @CrossOrigin(origins = "http://localhost:3000")
     @GetMapping("/student/group/{groupId}")
     public ResponseEntity<?> getStudentByGroup(@PathVariable Long groupId) {
         List<Student> students = studentService.getStudentByGroup(groupId);

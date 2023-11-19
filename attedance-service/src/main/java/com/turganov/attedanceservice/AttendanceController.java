@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
+@CrossOrigin
 public class AttendanceController {
 
     private final AttendanceService attendanceService;

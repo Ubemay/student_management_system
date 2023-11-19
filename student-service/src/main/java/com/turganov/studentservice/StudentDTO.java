@@ -9,9 +9,12 @@ import lombok.*;
 @NoArgsConstructor
 public class StudentDTO {
 
-    private Long studentId;
+    private Long id;
+    private Integer age;
+    private String email;
     private String firstname;
     private String lastname;
+    private Group group;
 
 
 }

@@ -4,21 +4,43 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
+@CrossOrigin
 public class InstructorController {
 
     private final InstructorService instructorService;
+    private final DepartmentClient departmentClient;
 
-    public InstructorController(InstructorService instructorService) {
+    public InstructorController(InstructorService instructorService, DepartmentClient departmentClient) {
         this.instructorService = instructorService;
+        this.departmentClient = departmentClient;
     }
 
     @GetMapping("/instructors")
-    public ResponseEntity<List<Instructor>> listInstructors() {
+    public ResponseEntity<List<InstructorResponse>> listInstructors() {
         List<Instructor> instructors = instructorService.getAllInstructors();
-        return ResponseEntity.ok(instructors);
+        List<InstructorResponse> responseList = new ArrayList<>();
+
+        for (Instructor instructor : instructors) {
+            InstructorResponse response = new InstructorResponse();
+            response.setId(instructor.getId());
+            response.setFirstName(instructor.getFirstName());
+            response.setLastName(instructor.getLastName());
+            response.setEmail(instructor.getEmail());
+            response.setPhoneNumber(instructor.getPhoneNumber());
+
+            ResponseEntity<Department> departmentResponse = departmentClient.getDepartmentById(instructor.getDepartmentId());
+            if (departmentResponse.getStatusCode() == HttpStatus.OK) {
+                response.setDepartment(departmentResponse.getBody());
+            }
+
+            responseList.add(response);
+        }
+
+        return ResponseEntity.ok(responseList);
     }
 
     @PostMapping("/instructors")

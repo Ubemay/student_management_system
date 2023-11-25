@@ -4,22 +4,73 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
 @CrossOrigin
 public class CourseController {
 
-    private CourseService courseService;
+    private final CourseService courseService;
+    private final InstructorClient instructorClient;
 
-    public CourseController(CourseService courseService) {
+    public CourseController(CourseService courseService, InstructorClient instructorClient) {
         this.courseService = courseService;
+        this.instructorClient = instructorClient;
     }
 
+//    @GetMapping("/courses")
+//    public ResponseEntity<List<Course>> listCourses() {
+//        List<Course> courses = courseService.getAllCourses();
+//        return ResponseEntity.ok(courses);
+//    }
+
+//    @GetMapping("/instructors")
+//    public ResponseEntity<List<InstructorResponse>> listInstructors() {
+//        List<Instructor> instructors = instructorService.getAllInstructors();
+//        List<InstructorResponse> responseList = new ArrayList<>();
+//
+//        for (Instructor instructor : instructors) {
+//            InstructorResponse response = new InstructorResponse();
+//            response.setId(instructor.getId());
+//            response.setFirstName(instructor.getFirstName());
+//            response.setLastName(instructor.getLastName());
+//            response.setEmail(instructor.getEmail());
+//            response.setPhoneNumber(instructor.getPhoneNumber());
+//
+//            ResponseEntity<Department> departmentResponse = departmentClient.getDepartmentById(instructor.getDepartmentId());
+//            if (departmentResponse.getStatusCode() == HttpStatus.OK) {
+//                response.setDepartment(departmentResponse.getBody());
+//            }
+//
+//            responseList.add(response);
+//        }
+//
+//        return ResponseEntity.ok(responseList);
+//    }
+
     @GetMapping("/courses")
-    public ResponseEntity<List<Course>> listCourses() {
+    public ResponseEntity<List<CourseResponse>> listCourses() {
         List<Course> courses = courseService.getAllCourses();
-        return ResponseEntity.ok(courses);
+        List<CourseResponse> responseList = new ArrayList<>();
+
+        for (Course course : courses) {
+            CourseResponse response = new CourseResponse();
+            response.setId(course.getId());
+            response.setCourseName(course.getCourseName());
+            response.setDescription(course.getDescription());
+            response.setEndDate(course.getEndDate());
+            response.setStartDate(course.getStartDate());
+
+            ResponseEntity <Instructor> instructorResponse = instructorClient.getInstructorsById(course.getInstructorId());
+            if (instructorResponse.getStatusCode() == HttpStatus.OK) {
+                response.setInstructor(instructorResponse.getBody());
+            }
+
+            responseList.add(response);
+        }
+
+        return ResponseEntity.ok(responseList);
     }
 
     @PostMapping("/courses")

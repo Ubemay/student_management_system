@@ -35,7 +35,8 @@ public class StudentCourseController {
 
             ResponseEntity<Course> courseResponse = courseClient.getCourseById(studentCourse.getCourseId());
             if (courseResponse.getStatusCode() == HttpStatus.OK) {
-                response.setCourse(courseResponse.getBody());
+                Course course = courseResponse.getBody();
+                response.setCourse(mapToCourseResponse(course));
             }
 
             ResponseEntity<Student> studentResponse = studentClient.getStudentById(studentCourse.getStudentId());
@@ -43,16 +44,39 @@ public class StudentCourseController {
                 response.setStudent(studentResponse.getBody());
             }
 
-            ResponseEntity<Instructor> instructorResponse = instructorClient.getInstructorById(studentCourse.getInstructorId());
-            if (instructorResponse.getStatusCode() == HttpStatus.OK) {
-                response.setInstructor(instructorResponse.getBody());
-            }
-
             responseList.add(response);
         }
 
         return ResponseEntity.ok(responseList);
     }
+
+    private Course mapToCourseResponse(Course course) {
+        Course courseResponse = new Course();
+        courseResponse.setId(course.getId());
+        courseResponse.setCourseName(course.getCourseName());
+        courseResponse.setDescription(course.getDescription());
+        courseResponse.setStartDate(course.getStartDate());
+        courseResponse.setEndDate(course.getEndDate());
+
+        ResponseEntity<Instructor> instructorResponse = instructorClient.getInstructorById(course.getInstructorId());
+        if (instructorResponse.getStatusCode() == HttpStatus.OK && instructorResponse.getBody() != null) {
+            courseResponse.setInstructor(mapToInstructorResponse(instructorResponse.getBody()));
+        }
+
+        return courseResponse;
+    }
+
+    private Instructor mapToInstructorResponse(Instructor instructor) {
+        Instructor instructorResponse = new Instructor();
+        instructorResponse.setId(instructor.getId());
+        instructorResponse.setFirstName(instructor.getFirstName());
+        instructorResponse.setLastName(instructor.getLastName());
+        instructorResponse.setEmail(instructor.getEmail());
+        instructorResponse.setPhoneNumber(instructor.getPhoneNumber());
+
+        return instructorResponse;
+    }
+
 
     @PostMapping("/student-courses")
     public ResponseEntity<String> saveStudentCourse(@RequestBody StudentCourse studentCourse) {
@@ -97,33 +121,33 @@ public class StudentCourseController {
         }
     }
 
-    @GetMapping("/student-courses/{id}")
-    public ResponseEntity<StudentCourseResponse> findStudentCourseById(@PathVariable Long id) {
-        StudentCourse studentCourse = studentCourseService.getStudentCourseById(id);
-
-        if (studentCourse != null) {
-            StudentCourseResponse response = new StudentCourseResponse();
-            response.setId(studentCourse.getId());
-
-            ResponseEntity<Course> courseResponse = courseClient.getCourseById(studentCourse.getCourseId());
-            if (courseResponse.getStatusCode() == HttpStatus.OK) {
-                response.setCourse(courseResponse.getBody());
-            }
-
-            ResponseEntity<Student> studentResponse = studentClient.getStudentById(studentCourse.getStudentId());
-            if (studentResponse.getStatusCode() == HttpStatus.OK) {
-                response.setStudent(studentResponse.getBody());
-            }
-
-            ResponseEntity<Instructor> instructorResponse = instructorClient.getInstructorById(studentCourse.getInstructorId());
-            if (instructorResponse.getStatusCode() == HttpStatus.OK) {
-                response.setInstructor(instructorResponse.getBody());
-            }
-
-            return new ResponseEntity<>(response, HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-    }
+//    @GetMapping("/student-courses/{id}")
+//    public ResponseEntity<StudentCourseResponse> findStudentCourseById(@PathVariable Long id) {
+//        StudentCourse studentCourse = studentCourseService.getStudentCourseById(id);
+//
+//        if (studentCourse != null) {
+//            StudentCourseResponse response = new StudentCourseResponse();
+//            response.setId(studentCourse.getId());
+//
+//            ResponseEntity<Course> courseResponse = courseClient.getCourseById(studentCourse.getCourseId());
+//            if (courseResponse.getStatusCode() == HttpStatus.OK) {
+//                response.setCourse(courseResponse.getBody());
+//            }
+//
+//            ResponseEntity<Student> studentResponse = studentClient.getStudentById(studentCourse.getStudentId());
+//            if (studentResponse.getStatusCode() == HttpStatus.OK) {
+//                response.setStudent(studentResponse.getBody());
+//            }
+//
+//            ResponseEntity<Instructor> instructorResponse = instructorClient.getInstructorById(studentCourse.getInstructorId());
+//            if (instructorResponse.getStatusCode() == HttpStatus.OK) {
+//                response.setInstructor(instructorResponse.getBody());
+//            }
+//
+//            return new ResponseEntity<>(response, HttpStatus.OK);
+//        } else {
+//            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+//        }
+//    }
 
 }

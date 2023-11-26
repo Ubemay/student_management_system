@@ -19,4 +19,6 @@ public interface StudentRepository extends JpaRepository<Student, Long> {
 
     List<Student> findStudentByGroupId(Long groupId);
 
+    Student findStudentByEmail(String email);
+
 }

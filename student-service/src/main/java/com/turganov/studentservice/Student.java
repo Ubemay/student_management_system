@@ -23,7 +23,7 @@ public class Student {
     @Column(name = "last_name")
     private String lastname;
 
-    @Column(name = "email", nullable = false)
+    @Column(name = "email", nullable = false, unique = true)
     private String email;
 
     @Column(name = "age", nullable = false)
@@ -31,5 +31,8 @@ public class Student {
 
     @Column(name = "group_id")
     private Long groupId;
+
+    @Column
+    private String password;
 
 }

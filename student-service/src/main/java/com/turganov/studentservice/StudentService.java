@@ -19,4 +19,6 @@ public interface StudentService {
 
     List<Student> getStudentByGroup(Long groupId);
 
+    Student findStudentByEmail(String email);
+
 }

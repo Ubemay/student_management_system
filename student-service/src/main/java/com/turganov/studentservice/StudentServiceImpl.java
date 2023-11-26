@@ -63,6 +63,11 @@ public class StudentServiceImpl implements StudentService {
         return studentRepository.findStudentByGroupId(groupId);
     }
 
+    @Override
+    public Student findStudentByEmail(String email) {
+        return studentRepository.findStudentByEmail(email);
+    }
+
 
 }
 

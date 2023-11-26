@@ -31,6 +31,7 @@ public class StudentController {
             response.setEmail(student.getEmail());
             response.setFirstname(student.getFirstname());
             response.setLastname(student.getLastname());
+            response.setPassword(student.getPassword());
 
             ResponseEntity <Group> groupResponse = groupClient.getGroupsById(student.getGroupId());
             if (groupResponse.getStatusCode() == HttpStatus.OK) {
@@ -123,4 +124,14 @@ public class StudentController {
         return ResponseEntity.ok(students);
     }
 
+    @GetMapping("/student/email/{email}")
+    public ResponseEntity<Student> getStudentByEmail(@PathVariable String email) {
+        Student student = studentService.findStudentByEmail(email);
+
+        if (student != null) {
+            return new ResponseEntity<>(student, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
 }
